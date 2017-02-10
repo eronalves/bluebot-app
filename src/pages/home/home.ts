@@ -9,16 +9,19 @@ import { NavController } from 'ionic-angular';
   templateUrl: 'home.html'
 })
 export class HomePage {
-  public messages: Array<string> = [];
+  public messages: Array<any> = [];
   public chatbox: string;
   public feedBackVoicer: string;
 
   constructor(public navCtrl: NavController) {
-    this.messages = ['a', 'b'];
+    this.pushMessageBoxBender('Oi, em que posso ajudá-lo?');
+    this.pushMessageBoxPerson('Quando o André vai liberar cerveja?');
   }
 
   send(message) {
     if(message && message != "") {
+      this.pushMessageBoxPerson(message);
+
       try {      
         console.log(ApiAIPlugin);
         ApiAIPlugin.requestText(
@@ -36,6 +39,24 @@ export class HomePage {
       }
   }
 
+  private 
+
+  pushMessageBoxPerson(mensagem) {
+    this.pushMessageBox(mensagem, 'Person', 'Ricardex Dj');
+  }
+
+  pushMessageBoxBender(mensagem) {
+    this.pushMessageBox(mensagem, 'Bender', 'Bender');
+  }
+
+  pushMessageBox(mensagem, sender, nickname) {
+    this.messages.push({
+        mensagem: mensagem,
+        sender: sender,
+        nickname: nickname
+      });
+  }
+
   sendVoice() {
      ApiAIPlugin.requestVoice({},
       function (response) {
@@ -45,40 +66,14 @@ export class HomePage {
       function (error) {
         alert("Error!\n" + error);
       });
-
-//      try {     
-//       // ApiAIPlugin.levelMeterCallback(function(level) {
-//       //      // console.log(level);
-//       //     });
-
-//       ApiAIPlugin.setListeningStartCallback(() => {
-//         this.feedBackVoicer = 'Escutando...'
-//     console.log("listening started");
-// });
-
-// ApiAIPlugin.setListeningFinishCallback(() => {
-//   this.feedBackVoicer = 'Enviado!'
-//     console.log("listening stopped");
-// });     
-
-//       ApiAIPlugin.requestVoice(
-//         {}, // empty for simple requests, some optional parameters can be here
-//         (response) => { this.receiveText(response)} ,
-//         function (error) {
-//             // place your error processing here
-//             alert(error);
-//         });                
-//     } catch (e) {
-//         alert(e);
-//     }
   }
 
   receiveText(response) {
       // place your result processing here
       console.log(response);
       console.log(response.result.fulfillment.speech); 
-      this.messages.push(response.result.fulfillment.speech);
-      this.feedBackVoicer = "";
+      this.pushMessageBoxBender(response.result.fulfillment.speech);
+
       //alert(JSON.stringify(response));
   }
   

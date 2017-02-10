@@ -7,18 +7,33 @@
 </ion-header>
 
 <ion-content class="home">
-    <ion-list>
-        <ion-item *ngFor="let message of messages">{{message}}</ion-item>
+    <ion-list>  
+        <ion-item text-wrap no-lines *ngFor="let message of messages">
+          <ion-avatar item-left *ngIf="message.sender === 'Bender'">
+            <img src="assets/icon/Bender.ico">
+          </ion-avatar>
+            <p [ngClass]="(message.sender=='Person')?'message-sender-right':''">{{message.nickname}}</p>
+            {{message.mensagem}}
+
+            <ion-avatar item-right *ngIf="message.sender !== 'Bender'">
+              <img src="assets/img/person.jpg">
+            </ion-avatar>
+        </ion-item>
     </ion-list>
 </ion-content>
 
 <ion-footer>
-   <ion-input placeholder="Digitar mensagem" clearInput [(ngModel)]="chatBox">
-   </ion-input>
-   <button ion-button full (click)="sendVoice()"> 
-     <span *ngIf="!feedBackVoicer">{{feedBackVoicer}}</span>
-     <ion-icon name="mic" *ngIf="!feedBackVoicer">
-   </ion-icon></button>
-   <button ion-button full (click)="send(chatBox)">Enviar</button>
+  <ion-grid>
+    <ion-row>
+      <ion-col width-75>
+      <ion-textarea item-left placeholder="Digitar mensagem" clearInput [(ngModel)]="chatBox">
+        
+      </ion-textarea>
+      </ion-col>
+      <ion-col width-33>
+        <button item-right ion-button (click)="send(chatBox)">Enviar</button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-footer>
 
