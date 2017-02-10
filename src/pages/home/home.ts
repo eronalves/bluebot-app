@@ -1,8 +1,9 @@
 declare var ApiAIPlugin:any;
 
-import { Component } from '@angular/core';
-
-import { NavController } from 'ionic-angular';
+import { Component, ViewChild } from '@angular/core';
+import { NavController, Content, Events } from 'ionic-angular';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
 
 @Component({
   selector: 'page-home',
@@ -10,18 +11,43 @@ import { NavController } from 'ionic-angular';
 })
 export class HomePage {
   public messages: Array<any> = [];
+  public data: Observable<Array<any>>;
   public chatbox: string;
   public feedBackVoicer: string;
+  
+  private anyErrors: any;
+  private finished: Boolean;
+  private events: Events;
+  
+  @ViewChild(Content) content: Content;
 
-  constructor(public navCtrl: NavController) {
-    this.pushMessageBoxBender('Oi, em que posso ajudá-lo?');
-    this.pushMessageBoxPerson('Quando o André vai liberar cerveja?');
+  constructor(public navCtrl: NavController, public eventsInject: Events) {
+    this.events = eventsInject;
+    this.pushMessageBoxBender("I'm Bender, baby! Oh god, please insert liquor before request anything", null);
+
+     this.data = new Observable(observer => {
+          setTimeout(() => {
+              observer.complete();
+          }, 3000);
+      });
+
+      this.data.subscribe(
+          value => this.messages.push(value),
+          error => this.anyErrors = true,
+          () => this.finished = true
+      );
+
+    this.events.subscribe('messages:updated', (messagesUpdated) => {
+      console.log(messagesUpdated);
+      //Perform some operations
+      this.messages = messagesUpdated;
+    });
+
   }
-
+  
   send(message) {
     if(message && message != "") {
       this.pushMessageBoxPerson(message);
-
       try {      
         console.log(ApiAIPlugin);
         ApiAIPlugin.requestText(
@@ -41,20 +67,29 @@ export class HomePage {
 
   private 
 
+  scrollToBottom(){
+    if (this.content) {
+      this.content.scrollToBottom();
+    }
+  }
+
   pushMessageBoxPerson(mensagem) {
-    this.pushMessageBox(mensagem, 'Person', 'Ricardex Dj');
+    this.pushMessageBox(mensagem, 'Person', 'Ricardex Dj', null);
   }
 
-  pushMessageBoxBender(mensagem) {
-    this.pushMessageBox(mensagem, 'Bender', 'Bender');
+  pushMessageBoxBender(mensagem, fullMessages) {
+    this.pushMessageBox(mensagem, 'Bender', 'Bender', fullMessages);
   }
 
-  pushMessageBox(mensagem, sender, nickname) {
+  pushMessageBox(mensagem, sender, nickname, fullMessages) {
     this.messages.push({
         mensagem: mensagem,
         sender: sender,
-        nickname: nickname
+        nickname: nickname,
+        fullMessages: fullMessages
       });
+      this.events.publish('messages:updated', this.messages);
+      this.scrollToBottom();
   }
 
   sendVoice() {
@@ -70,11 +105,21 @@ export class HomePage {
 
   receiveText(response) {
       // place your result processing here
-      console.log(response);
-      console.log(response.result.fulfillment.speech); 
-      this.pushMessageBoxBender(response.result.fulfillment.speech);
+      if (response.result.fulfillment.speech === '') {
+        this.handleBlankResponse()
+      } else {
+        console.log(response);
+        console.log(response.result.fulfillment.speech); 
 
+         setTimeout( () => {
+        this.pushMessageBoxBender(response.result.fulfillment.speech, response.result.fulfillment.messages);
+ },500)
+      }
       //alert(JSON.stringify(response));
+  }
+
+  handleBlankResponse() {
+    this.pushMessageBoxBender('Fui atacado por Klingons e não consegui entregar seu pedido, por favor contate meu criador!', null);
   }
   
 
