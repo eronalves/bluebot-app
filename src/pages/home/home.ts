@@ -12,7 +12,7 @@ import 'rxjs/add/observable/of';
 export class HomePage {
   public messages: Array<any> = [];
   public data: Observable<Array<any>>;
-  public chatbox: string;
+  public chatBox: string;
   public feedBackVoicer: string;
   
   private anyErrors: any;
@@ -48,6 +48,7 @@ export class HomePage {
   send(message) {
     if(message && message != "") {
       this.pushMessageBoxPerson(message);
+      this.chatBox = '';
       try {      
         console.log(ApiAIPlugin);
         ApiAIPlugin.requestText(

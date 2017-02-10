@@ -14,7 +14,7 @@
           </ion-avatar>
             <p [ngClass]="(message.sender=='Person')?'message-sender-right':''">{{message.nickname}}</p>
             <div [innerHTML]="message.mensagem"></div>
-            <img *ngIf="message.fullMessages" [src]="message.fullMessages[0].imageUrl" />
+            <img *ngIf="message.fullMessages && message.fullMessages.size > 0" [src]="message.fullMessages[0].imageUrl" />
             <!--{{ message.mensagem }}-->
 
             <ion-avatar item-right *ngIf="message.sender !== 'Bender'">
