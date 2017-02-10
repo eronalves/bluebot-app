@@ -8,12 +8,13 @@
 
 <ion-content class="home">
     <ion-list>  
-        <ion-item text-wrap no-lines *ngFor="let message of messages">
+        <ion-item text-wrap no-lines class="message" *ngFor="let message of messages" [ngClass]="(message.sender=='Person')?'message-person':'message-bender'">
           <ion-avatar item-left *ngIf="message.sender === 'Bender'">
             <img src="assets/icon/Bender.ico">
           </ion-avatar>
             <p [ngClass]="(message.sender=='Person')?'message-sender-right':''">{{message.nickname}}</p>
-            {{message.mensagem}}
+            <div [innerHTML]="message.mensagem"></div>
+            <!--{{ message.mensagem }}-->
 
             <ion-avatar item-right *ngIf="message.sender !== 'Bender'">
               <img src="assets/img/person.jpg">

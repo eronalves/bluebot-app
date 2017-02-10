@@ -1,10 +1,28 @@
 page-home {
-    
-    .message-sender {
-        
-    }
 
     .message-sender-right {
         text-align: right;
+    }
+
+    .label-sender {
+        background-color: #adecad;
+        color: #3c3a3a;
+        border-radius: 10px;
+        padding: 10px;
+        font-size: 0.85em;
+    }
+
+    .message ion-label {
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    .message-person ion-label {
+        background: #cfecb4;
+        
+    }
+
+    .message-bender ion-label {
+        background: #d8dad9;
     }
 }
