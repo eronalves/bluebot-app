@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Bluebot
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="home">
+    <ion-list>
+        <ion-item *ngFor="let message of messages">{{message}}</ion-item>
+    </ion-list>
+</ion-content>
+
+<ion-footer>
+   <ion-input placeholder="Digitar mensagem" clearInput [(ngModel)]="chatBox">
+   </ion-input>
+   <button ion-button full (click)="sendVoice()"> 
+     <span *ngIf="!feedBackVoicer">{{feedBackVoicer}}</span>
+     <ion-icon name="mic" *ngIf="!feedBackVoicer">
+   </ion-icon></button>
+   <button ion-button full (click)="send(chatBox)">Enviar</button>
+</ion-footer>
+
